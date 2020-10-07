@@ -18,11 +18,23 @@ export function getList() {
 }
 
 export function create(values) {
+  return submit(values, 'post');
+}
+
+export function update(values) {
+  return submit(values, 'put');
+}
+
+export function remove(values) {
+  return submit(values, 'delete');
+}
+
+function submit(values, method) {
   return (dispatch) => {
-    axios
-      .post(`${BASE_URL}/billingCycles`, values)
+    const id = values._id ? values._id : '';
+    axios[method](`${BASE_URL}/billingCycles/${id}`, values)
       .then((resp) => {
-        toastr.success('Sucesso', 'Novo ciclo adicionado com sucesso.');
+        toastr.success('Sucesso', 'Operação realizada com sucesso.');
         dispatch(init());
       })
       .catch((e) => {
@@ -31,10 +43,19 @@ export function create(values) {
   };
 }
 
+//tentar reutilizar essa função para delete tbm
 export function showUpdate(billingCycle) {
   return [
     showTabs('tabUpdate'),
     selectTab('tabUpdate'),
+    initialize('billingCycleForm', billingCycle),
+  ];
+}
+
+export function showDelete(billingCycle) {
+  return [
+    showTabs('tabDelete'),
+    selectTab('tabDelete'),
     initialize('billingCycleForm', billingCycle),
   ];
 }
