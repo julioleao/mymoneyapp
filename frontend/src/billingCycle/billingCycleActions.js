@@ -6,7 +6,7 @@ import { showTabs, selectTab } from '../common/tab/tabActions';
 import { BASE_URL } from '../dashboard/dashboardActions';
 
 export const BILLING_CYCLE_FETCHED = 'BILLING_CYCLE_FETCHED';
-const INITIAL_VALUES = {};
+const INITIAL_VALUES = { credits: [{}], debts: [{}] };
 
 export function getList() {
   const request = axios.get(`${BASE_URL}/billingCycles`);
