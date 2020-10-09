@@ -1,5 +1,6 @@
-const INITIAL_STATE = { selected: '', visible: {} };
 import { TAB_SELECTED, TAB_SHOWED } from './tabActions';
+
+const INITIAL_STATE = { selected: '', visible: {} };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {

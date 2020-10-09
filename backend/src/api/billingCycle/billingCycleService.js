@@ -1,11 +1,11 @@
-const BillingCycle = require("./billingCycle");
-const errorHandler = require("../common/errorHandler");
+const BillingCycle = require('./billingCycle');
+const errorHandler = require('../common/errorHandler');
 
-BillingCycle.methods(["get", "post", "put", "delete"]);
+BillingCycle.methods(['get', 'post', 'put', 'delete']);
 BillingCycle.updateOptions({ new: true, runValidators: true });
-BillingCycle.after("post", errorHandler).after("put", errorHandler);
+BillingCycle.after('post', errorHandler).after('put', errorHandler);
 
-BillingCycle.route("get", (req, res, next) => {
+BillingCycle.route('get', (req, res, next) => {
   BillingCycle.find({}, (err, docs) => {
     if (!err) {
       res.json(docs);
@@ -15,7 +15,7 @@ BillingCycle.route("get", (req, res, next) => {
   });
 });
 
-BillingCycle.route("count", (req, res, next) => {
+BillingCycle.route('count', (req, res, next) => {
   BillingCycle.countDocuments((error, value) => {
     if (error) {
       res.status(500).json({ erros: [error] });
@@ -25,34 +25,31 @@ BillingCycle.route("count", (req, res, next) => {
   });
 });
 
-BillingCycle.route("summary", (req, res, next) => {
-  BillingCycle.aggregate(
-    [
-      {
-        $project: {
-          credit: { $sum: "$credits.value" },
-          debt: { $sum: "$debts.value" },
-        },
+BillingCycle.route('summary', (req, res, next) => {
+  BillingCycle.aggregate([
+    {
+      $project: {
+        credit: { $sum: '$credits.value' },
+        debt: { $sum: '$debts.value' },
       },
-      {
-        $group: {
-          _id: null,
-          credit: { $sum: "$credit" },
-          debt: { $sum: "$debt" },
-        },
+    },
+    {
+      $group: {
+        _id: null,
+        credit: { $sum: '$credit' },
+        debt: { $sum: '$debt' },
       },
-      {
-        $project: { _id: 0, credit: 1, debt: 1 },
-      },
-    ],
-    (error, result) => {
-      if (error) {
-        res.status(500).json({ errors: [error] });
-      } else {
-        res.json(result[0] || { credit: 0, debt: 0 });
-      }
+    },
+    {
+      $project: { _id: 0, credit: 1, debt: 1 },
+    },
+  ]).exec((error, result) => {
+    if (error) {
+      res.status(500).json({ errors: [error] });
+    } else {
+      res.json(result[0] || { credit: 0, debt: 0 });
     }
-  );
+  });
 });
 
 module.exports = BillingCycle;
